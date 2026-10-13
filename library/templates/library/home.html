@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Book Library</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f5f5f5;
+            margin: 0;
+            padding: 20px;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+
+        /* Search + filter bar */
+        .search-bar {
+            max-width: 900px;
+            margin: 20px auto;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .search-bar input[type="text"] {
+            padding: 8px 12px;
+            width: 260px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        .search-bar select {
+            padding: 8px 12px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        .search-bar button {
+            padding: 8px 16px;
+            background: #2c3e50;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .search-bar a.clear {
+            padding: 8px 16px;
+            background: #95a5a6;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 4px;
+        }
+
+        /* Book grid */
+        .book-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 20px;
+            max-width: 1100px;
+            margin: 30px auto;
+        }
+        .book-card {
+            background: #fff;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+            transition: transform 0.2s;
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
+        .book-card:hover {
+            transform: translateY(-4px);
+        }
+        .book-card img {
+            width: 100%;
+            height: 260px;
+            object-fit: cover;
+            display: block;
+        }
+        .book-info {
+            padding: 12px;
+        }
+        .book-title {
+            font-weight: bold;
+            font-size: 15px;
+            margin-bottom: 4px;
+            color: #222;
+        }
+        .book-author {
+            font-size: 13px;
+            color: #555;
+        }
+    </style>
+</head>
+<body>
+    <h1>My Book Library</h1>
+
+    <!-- Search + genre filter -->
+    <form class="search-bar" method="get" action="{% url 'home' %}">
+        <input
+            type="text"
+            name="q"
+            placeholder="Search by title or author"
+            value="{{ current_query|default:'' }}"
+        >
+        <select name="genre">
+            <option value="">All genres</option>
+            {% for g in genres %}
+                <option value="{{ g }}" {% if g == current_genre %}selected{% endif %}>
+                    {{ g }}
+                </option>
+            {% endfor %}
+        </select>
+        <button type="submit">Search</button>
+        <a class="clear" href="{% url 'home' %}">Clear</a>
+    </form>
+
+    <!-- Book cards -->
+    <div class="book-grid">
+        {% for book in books %}
+            <a href="{{ book.cover_image.url }}" target="_blank" class="book-card">
+                {% if book.cover_image %}
+                    <img src="{{ book.cover_image.url }}" alt="{{ book.title }}">
+                {% else %}
+                    <div style="height:260px;background:#eee;display:flex;align-items:center;justify-content:center;color:#888;">
+                        No cover
+                    </div>
+                {% endif %}
+                <div class="book-info">
+                    <div class="book-title">{{ book.title }}</div>
+                    <div class="book-author">{{ book.author }}</div>
+                </div>
+            </a>
+        {% empty %}
+            <p style="text-align:center;grid-column:1/-1;">No books found.</p>
+        {% endfor %}
+    </div>
+</body>
+</html>

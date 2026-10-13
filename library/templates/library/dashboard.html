@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard – Book Library</title>
+    <style>
+        :root {
+            --bg: #f7f8fc;
+            --card-bg: #ffffff;
+            --text: #1f2937;
+            --muted: #6b7280;
+            --primary: #4f46e5;
+            --primary-soft: #eef2ff;
+            --accent: #10b981;
+            --shadow: 0 10px 25px rgba(0,0,0,0.06);
+            --radius: 14px;
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f3f4f6 0%, #eef2ff 100%);
+            color: var(--text);
+            min-height: 100vh;
+        }
+
+        .navbar {
+            background: rgba(255,255,255,0.8);
+            backdrop-filter: blur(8px);
+            border-bottom: 1px solid #e5e7eb;
+            padding: 14px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 5;
+        }
+
+        .brand {
+            font-weight: 700;
+            font-size: 18px;
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        .nav-links a {
+            margin-left: 16px;
+            text-decoration: none;
+            color: var(--muted);
+            font-size: 14px;
+        }
+        .nav-links a:hover {
+            color: var(--text);
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+
+        .page-title {
+            font-size: 26px;
+            font-weight: 700;
+            margin-bottom: 22px;
+        }
+
+        /* Stats row */
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 18px;
+            margin-bottom: 28px;
+        }
+
+        .stat-card {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            padding: 20px 18px;
+            box-shadow: var(--shadow);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .stat-label {
+            font-size: 13px;
+            color: var(--muted);
+            margin-bottom: 6px;
+        }
+
+        .stat-value {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--text);
+        }
+
+        .stat-sub {
+            font-size: 12px;
+            color: var(--muted);
+            margin-top: 6px;
+        }
+
+        /* Quick actions */
+        .actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 18px;
+            margin-bottom: 28px;
+        }
+
+        .action-card {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            padding: 18px;
+            box-shadow: var(--shadow);
+            text-decoration: none;
+            color: var(--text);
+            transition: transform 0.15s ease, box-shadow 0.15s ease;
+        }
+
+        .action-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 14px 30px rgba(0,0,0,0.08);
+        }
+
+        .action-title {
+            font-weight: 600;
+            font-size: 15px;
+            margin-bottom: 6px;
+        }
+
+        .action-desc {
+            font-size: 13px;
+            color: var(--muted);
+        }
+
+        .action-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            background: var(--primary-soft);
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        /* Sections */
+        .section-title {
+            font-size: 18px;
+            font-weight: 700;
+            margin: 26px 0 14px;
+        }
+
+        /* Recent books */
+        .book-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            gap: 16px;
+        }
+
+        .book-card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            text-decoration: none;
+            color: inherit;
+            transition: transform 0.15s ease;
+        }
+
+        .book-card:hover {
+            transform: translateY(-3px);
+        }
+
+        .book-card img {
+            width: 100%;
+            height: 220px;
+            object-fit: cover;
+            display: block;
+        }
+
+        .book-info {
+            padding: 10px;
+        }
+
+        .book-title {
+            font-weight: 600;
+            font-size: 13px;
+            margin-bottom: 3px;
+            color: var(--text);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .book-author {
+            font-size: 12px;
+            color: var(--muted);
+        }
+
+        /* Genres tags */
+        .genres-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .genre-tag {
+            background: var(--card-bg);
+            border-radius: 999px;
+            padding: 8px 14px;
+            font-size: 13px;
+            box-shadow: var(--shadow);
+            color: var(--text);
+        }
+
+        .genre-count {
+            color: var(--muted);
+            margin-left: 6px;
+            font-size: 12px;
+        }
+
+        .footer-note {
+            text-align: center;
+            font-size: 12px;
+            color: var(--muted);
+            margin: 40px 0 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <a class="brand" href="{% url 'dashboard' %}">Book Library</a>
+        <div class="nav-links">
+            <a href="{% url 'home' %}">Public Home</a>
+            <a href="{% url 'book_list' %}">All Books</a>
+            <a href="{% url 'book_create' %}">Add Book</a>
+            <a href="{% url 'book_bulk_create' %}">Bulk Add</a>
+            <a href="{% url 'logout' %}">Logout</a>
+        </div>
+    </div>
+
+    <div class="container">
+        <h1 class="page-title">Dashboard</h1>
+
+        <!-- Stats -->
+        <div class="stats">
+            <div class="stat-card">
+                <div>
+                    <div class="stat-label">Total Books</div>
+                    <div class="stat-value">{{ total_books }}</div>
+                    <div class="stat-sub">In your library</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div>
+                    <div class="stat-label">Total Genres</div>
+                    <div class="stat-value">{{ total_genres }}</div>
+                    <div class="stat-sub">Unique categories</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div>
+                    <div class="stat-label">Recently Added</div>
+                    <div class="stat-value">{{ recent_books|length }}</div>
+                    <div class="stat-sub">Last 6 books shown below</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick actions -->
+        <div class="actions">
+            <a class="action-card" href="{% url 'book_create' %}">
+                <div class="action-icon">+</div>
+                <div class="action-title">Add a Book</div>
+                <div class="action-desc">Add a single book with cover and details.</div>
+            </a>
+            <a class="action-card" href="{% url 'book_bulk_create' %}">
+                <div class="action-icon">⊞</div>
+                <div class="action-title">Bulk Add Books</div>
+                <div class="action-desc">Add multiple books at once using a form.</div>
+            </a>
+            <a class="action-card" href="{% url 'book_list' %}">
+                <div class="action-icon">≡</div>
+                <div class="action-title">View All Books</div>
+                <div class="action-desc">Browse and manage your entire collection.</div>
+            </a>
+        </div>
+
+        <!-- Recent books -->
+        <h2 class="section-title">Recently Added Books</h2>
+        <div class="book-grid">
+            {% for book in recent_books %}
+                <a class="book-card" href="{% url 'book_detail' book.pk %}">
+                    {% if book.cover_image %}
+                        <img src="{{ book.cover_image.url }}" alt="{{ book.title }}">
+                    {% else %}
+                        <div style="height:220px;background:#f3f4f6;display:flex;align-items:center;justify-content:center;color:#9ca3af;">
+                            No cover
+                        </div>
+                    {% endif %}
+                    <div class="book-info">
+                        <div class="book-title">{{ book.title }}</div>
+                        <div class="book-author">{{ book.author }}</div>
+                    </div>
+                </a>
+            {% empty %}
+                <p style="color:var(--muted);">No books yet. Start by adding one!</p>
+            {% endfor %}
+        </div>
+
+        <!-- Genres -->
+        <h2 class="section-title">Top Genres</h2>
+        <div class="genres-list">
+            {% for g in genres %}
+                <div class="genre-tag">
+                    {{ g.genre }}
+                    <span class="genre-count">({{ g.cnt }})</span>
+                </div>
+            {% empty %}
+                <p style="color:var(--muted);">No genres yet.</p>
+            {% endfor %}
+        </div>
+
+        <div class="footer-note">
+            Your aesthetic book library dashboard is ready.
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,26 @@
+{% extends 'library/base.html' %}
+
+{% block content %}
+<h1 class="mb-4">All Books</h1>
+
+<div class="row">
+    {% for book in books %}
+    <div class="col-md-3 mb-4">
+        <div class="book-card">
+            {% if book.cover_image %}
+            <img src="{{ book.cover_image.url }}" alt="{{ book.title }}">
+            {% else %}
+            <img src="https://via.placeholder.com/300x400?text=No+Cover" alt="{{ book.title }}">
+            {% endif %}
+            <div class="card-body">
+                <h5 class="card-title">{{ book.title }}</h5>
+                <p class="card-text text-muted">{{ book.author }}</p>
+                <a href="{% url 'book_detail' book.pk %}" class="btn btn-sm btn-primary">View</a>
+            </div>
+        </div>
+    </div>
+    {% empty %}
+    <p>No books yet. Add some from the admin.</p>
+    {% endfor %}
+</div>
+{% endblock %}
